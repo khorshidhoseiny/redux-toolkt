@@ -1,24 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { Provider } from "react-redux";
+import { store } from "./component/features/store";
+import CounterCompunent from "./component/counterComponent";
+import "bootstrap/dist/css/bootstrap.min.css";
+import TodoList from "./component/Todos/TodoList";
+import AddTodoForm from "./component/Todos/AddTodoForm";
+import TotalCompleteItems from "./component/Todos/TotalCompleteTodo";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Provider store={store}>
+        {/* <CounterCompunent /> */}
+        {/* <h1>hello</h1> */}
+        <div className="App container">
+          <AddTodoForm />
+          <TodoList />
+          <TotalCompleteItems />
+        </div>
+      </Provider>
+    </>
   );
 }
 
