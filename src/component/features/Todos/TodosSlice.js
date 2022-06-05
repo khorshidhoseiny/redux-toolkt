@@ -1,13 +1,21 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+export const getAsyncTodos = createAsyncThunk(
+  "todos/getAsyncTodos",
+  async (_, { rejectWithValue }) => {
+    try {
+      const Response = await axios.get("http://localhost:3001/todos");
+      return Response.data;
+    } catch (error) {
+      return rejectWithValue([], error);
+    }
+  }
+);
 
 const initialState = {
-  todos: [
-    { id: 1, title: "todo1", completed: false },
-    { id: 2, title: "todo2", completed: false },
-    { id: 3, title: "todo3", completed: true },
-    { id: 4, title: "todo4", completed: false },
-    { id: 5, title: "todo5", completed: false },
-  ],
+  todos: [],
+  loading: false,
+  error: null,
 };
 const TodosSlice = createSlice({
   name: "todos",
@@ -25,13 +33,31 @@ const TodosSlice = createSlice({
       const selectedTodo = state.todos.find((t) => t.id === action.payload.id);
       selectedTodo.completed = !selectedTodo.completed;
     },
-    deleteTodos:(state,action)=>{
-      const filteredTodos=state.todos.filter(t=>t.id != action.payload.id);
-      state.todos=filteredTodos;
-    }
+    deleteTodos: (state, action) => {
+      const filteredTodos = state.todos.filter(
+        (t) => t.id != action.payload.id
+      );
+      state.todos = filteredTodos;
+    },
+  },
+  extraReducers: {
+    [getAsyncTodos.fulfilled]: (state, action) => {
+      return { ...state, todos: action.payload, loading: false, error: null };
+    },
+    [getAsyncTodos.pending]: (state, action) => {
+      return { ...state, todos: action.payload, loading: true, error: null };
+    },
+    [getAsyncTodos.rejected]: (state, action) => {
+      return {
+        ...state,
+        todos: action.payload,
+        loading: false,
+        error: action.error.message,
+      };
+    },
   },
 });
 
-export const { AddTodo, toggleTodos,deleteTodos } = TodosSlice.actions;
+export const { AddTodo, toggleTodos, deleteTodos } = TodosSlice.actions;
 
 export default TodosSlice.reducer;
