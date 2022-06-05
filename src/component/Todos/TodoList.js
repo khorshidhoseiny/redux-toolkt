@@ -6,7 +6,7 @@ import { getAsyncTodos } from "../features/Todos/TodosSlice";
 import TodoItem from "./TodoItem";
 
 const TodoList = () => {
-  const { todos, loading, error } = useSelector((state) => state.todo);
+  const { todos, loading, error } = useSelector((state) => state.todos);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAsyncTodos());
